@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LogX — v5.0</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#121528">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script type="module" src="js/app.js"></script>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand"><div class="dot"></div><h1>LogX</h1></div>
+      <div class="userbox hidden" id="userPanel">
+        <span id="saveTag" class="chip hidden">🔒 Saved login</span>
+        <div class="avatar" id="avatar">?</div>
+        <div class="username" id="username">@user</div>
+        <span id="syncBadge" class="status-badge status-idle" title="Sync status">Sync: idle</span>
+        <button id="logoutBtn" class="btn small">Log out</button>
+      </div>
+    </header>
+
+    <main class="grid">
+      <section id="section-login" class="card">
+        <div class="section-title"><h3>Sign in</h3></div>
+        <div class="row">
+          <label style="display:flex; align-items:center; gap:8px"><input id="remember" type="checkbox"> Save login on this device (silent sign-in)</label>
+        </div>
+        <div class="row" style="margin-top:10px">
+          <button id="googleBtn" class="btn google">Sign in with Google</button>
+        </div>
+        <p class="muted" style="margin-top:8px">Your data is saved to your Google Drive (LogX folder). We only request access to files we create.</p>
+        <p class="muted">If offline and previously signed in, you can still view/edit cached data; it will sync when online.</p>
+      </section>
+
+      <section id="section-log" class="card hidden">
+        <div class="section-title">
+          <h3>Quick Log</h3>
+          <div class="row">
+            <button id="addTypeBtn" class="btn">Add Log Type</button>
+            <button id="manageTypesBtn" class="btn">Manage Types</button>
+          </div>
+        </div>
+        <div id="logButtons" class="log-buttons"></div>
+        <div class="muted" style="margin-top:8px">Tap a button to log an entry.</div>
+      </section>
+
+      <section id="section-cal" class="card hidden">
+        <div class="section-title">
+          <h3>Calendar</h3>
+          <div class="view-tabs">
+            <button class="btn small" data-view="list">List</button>
+            <button class="btn small" data-view="week">Week</button>
+            <button class="btn small" data-view="month">Month</button>
+            <button class="btn small" data-view="year">Year</button>
+          </div>
+        </div>
+        <div class="row">
+          <button id="prevBtn" class="btn small">◀</button>
+          <button id="todayBtn" class="btn small">Today</button>
+          <button id="nextBtn" class="btn small">▶</button>
+          <div id="calTitle" class="chip">—</div>
+        </div>
+        <div class="calendar" id="calendar"></div>
+      </section>
+
+      <section id="section-chart" class="card hidden">
+        <div class="section-title">
+          <h3>Trends</h3>
+          <div class="row">
+            <label style="display:flex; align-items:center; gap:8px"><input id="cumulative" type="checkbox" checked> Cumulative</label>
+            <label style="display:flex; align-items:center; gap:8px"><input id="showPoints" type="checkbox"> Show points</label>
+          </div>
+        </div>
+        <div id="selectors" class="legend"></div>
+        <div class="chart-area"><canvas id="chart"></canvas></div>
+      </section>
+
+      <section id="section-quick" class="card hidden">
+        <div class="section-title">
+          <h3>Recent Entries</h3>
+          <div class="row">
+            <button id="manualBtn" class="btn small">Add manual entry</button>
+          </div>
+        </div>
+        <div id="recentList" class="list"></div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Create/Edit Type -->
+  <dialog id="typeModal">
+    <form method="dialog" id="typeForm">
+      <h3 id="typeModalTitle">Create Log Type</h3>
+      <div class="two">
+        <div><label>Name</label><input id="typeName" placeholder="Drink water" required></div>
+        <div><label>Color</label><input id="typeColor" type="color" value="#7aa2ff"></div>
+      </div>
+      <label>Description</label><textarea id="typeDesc" placeholder="This log will track water intake"></textarea>
+      <div class="row" style="margin:8px 0"><strong>Measurements</strong><button id="addMeas" class="btn small" type="button">Add measurement</button></div>
+      <div id="measList"></div>
+      <div class="row" style="margin-top:12px">
+        <button class="btn" value="cancel">Cancel</button>
+        <button id="saveType" class="btn primary" value="default">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Manage Types -->
+  <dialog id="manageModal">
+    <h3>Manage Types</h3>
+    <div id="manageList"></div>
+    <div class="row"><button id="closeManage" class="btn">Close</button></div>
+  </dialog>
+
+  <!-- Log Entry (quick/add/edit) -->
+  <dialog id="logModal">
+    <form method="dialog" id="logForm">
+      <h3 id="logTitle">Log Entry</h3>
+      <div id="logMeta" class="modal-row-2 hidden">
+        <div>
+          <label>Date & time</label>
+          <input id="entryDateTime" type="datetime-local">
+        </div>
+        <div class="hidden" id="typeSelectWrap">
+          <label>Log type</label>
+          <select id="typeSelect"></select>
+        </div>
+      </div>
+      <div id="logFields"></div>
+      <div class="row" style="margin-top:12px">
+        <button class="btn" value="cancel">Cancel</button>
+        <button id="logIt" class="btn primary" value="default">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Offline/Disconnected overlay -->
+  <div id="offlineMask">
+    <div class="panel">
+      <h3>Google Drive is disconnected</h3>
+      <p>Writes are disabled until we reconnect. You can still browse cached data.</p>
+      <div class="row" style="margin-top:10px">
+        <button id="retryBtn" class="btn">Retry</button>
+        <button id="reauthBtn" class="btn primary">Re-sign in</button>
+      </div>
+      <p class="muted" id="offlineReason"></p>
+    </div>
+  </div>
+</body>
+</html>

@@ -8,6 +8,7 @@ from .google_oauth import router as google_oauth_router, get_drive_status
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
+app.mount("/life-logger", StaticFiles(directory="app/lifelogger_app", html=True), name="life-logger")
 templates = Jinja2Templates(directory="app/templates")
 STATE = {"google": {"connected": False, "email": None, "token": None}}
 app.STATE = STATE
