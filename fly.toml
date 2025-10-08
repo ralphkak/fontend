@@ -1,10 +1,10 @@
-# fly.toml app configuration file generated for fontend-late-shadow-1803 on 2025-10-08T12:36:13-07:00
+# fly.toml app configuration file generated for fontend on 2025-10-08T19:42:02Z
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'fontend-late-shadow-1803'
-primary_region = 'sjc'
+app = 'fontend'
+primary_region = 'lax'
 
 [build]
 
@@ -20,3 +20,4 @@ primary_region = 'sjc'
   memory = '1gb'
   cpu_kind = 'shared'
   cpus = 1
+  memory_mb = 1024
