@@ -4,7 +4,7 @@
 #
 
 app = 'fontend-late-shadow-1803'
-primary_region = 'sea'
+primary_region = 'sjc'
 
 [build]
 
