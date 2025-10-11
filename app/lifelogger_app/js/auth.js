@@ -12,7 +12,32 @@ let onSignedOut = ()=>{};
 export function setupAuth(_onSignedIn, _onSignedOut){
   onSignedIn = _onSignedIn; onSignedOut = _onSignedOut;
   window.addEventListener('load', ()=>{
-    if(window.google && google.accounts){
+    if(window.google && google.accounts){      
+        
+      // tokenClient = google.accounts.oauth2.initTokenClient({
+      //   client_id: GOOGLE_CLIENT_ID,
+      //   scope: DRIVE_SCOPE,
+      //   callback: async (tokenResponse) => {
+      //     try {
+      //       if (tokenResponse && tokenResponse.access_token) {
+      //         // ... your existing token storage ...
+      //         localStorage.setItem("drive_access_token", tokenResponse.access_token);
+      //         console.log("tokenclient received...");
+      //         // Close the dialog politely
+      //         if (window.__gdModal && window.__gdModal.hideModal) {
+      //           window.__gdModal.hideModal();
+      //         } else {
+      //           // Fallback: try common selectors
+      //           const modal = document.querySelector("#connect-modal, .connect-modal, #gd-modal");
+      //           if (modal) modal.setAttribute("aria-hidden", "true");
+      //         }
+      //       }
+      //     } catch (e) {
+      //       console.error("Token handling error:", e);
+      //     }
+      //   }
+      // });
+      
       tokenClient = google.accounts.oauth2.initTokenClient({
         client_id: GOOGLE_CLIENT_ID, scope: DRIVE_SCOPE,
         callback: async (token) => {
@@ -21,6 +46,7 @@ export function setupAuth(_onSignedIn, _onSignedOut){
           await onSignedIn();
         }
       });
+
       bindUI();
       bootFromSession();
     }

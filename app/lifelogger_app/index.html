@@ -10,6 +10,8 @@
   <link rel="stylesheet" href="css/styles.css">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script type="module" src="js/app.js"></script>
+  <script src="js/overlay-fix.js"></script>
+
 </head>
 <body>
   <div class="container">
@@ -139,7 +141,7 @@
     </form>
   </dialog>
 
-  <!-- Offline/Disconnected overlay -->
+  <!-- Offline/Disconnected overlay 
   <div id="offlineMask">
     <div class="panel">
       <h3>Google Drive is disconnected</h3>
@@ -147,9 +149,12 @@
       <div class="row" style="margin-top:10px">
         <button id="retryBtn" class="btn">Retry</button>
         <button id="reauthBtn" class="btn primary">Re-sign in</button>
+        <button class="gdmodal-close" aria-label="Close" title="Close">Close</button>
       </div>
       <p class="muted" id="offlineReason"></p>
     </div>
   </div>
+  -->
+  
 </body>
 </html>
